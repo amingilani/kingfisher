@@ -1,0 +1,42 @@
+= Kingfisher Functional Specification
+Alec Ten Harmsel <alec@alectenharmsel.com>
+:toc:
+:numbered:
+:data-uri:
+
+== Summary
+
+Kingfisher is a fish tracker and forum.
+
+== User Score
+
+User score is based on average number of fish caught per trip, weighted by the
+number of reports they have in the past 12 months.
+
+//begin.rcode user_score, fig.asp=0.618, fig.width=12, fig.align="center"
+# Read in some example data
+data <- read.csv("func_spec/example_user_data.csv")
+
+# Compute the score, weighted by base-10 log of number of reports
+score <- mean(data$Fish.Caught) * log(length(data$Date)) / log(10)
+//end.rcode
+
+Pretty simple score calculation.
+The score goes up linearly with average fish caught (ex. for someone who fishes
+20 times per year):
+
+//begin.rcode avg_change, fig.asp=0.618, fig.width=12, fig.align="center"
+avg_caught <- 1:10
+plot(avg_caught, avg_caught * log(20) / log(10),
+    ylab="User score when fishing 20 times per year",
+    xlab="Average number of fish caught")
+//end.rcode
+
+The score goes up logarithmicly with number of times fished in the past year:
+
+//begin.rcode freq_change, fig.asp=0.618, fig.width=12, fig.align="center"
+times_fished <- 1:50
+plot(times_fished, 5 * log(times_fished) / log(10),
+    ylab="User score when average 5 catches per trip",
+    xlab="Number of fishing trips in the past 12 months")
+//end.rcode
